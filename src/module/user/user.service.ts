@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entity/user.entity';
@@ -16,31 +16,48 @@ export class UserService {
 
   async register(user: User): Promise<void> {
     const dbUser: User = await this.findOneByEmail(user.email);
-    if (dbUser) throw new Error('邮箱已注册');
+    if (dbUser) {
+      throw new HttpException(
+        {
+          message: '邮箱已注册',
+        },
+        400,
+      );
+    }
     return this.create(user);
+  }
+
+  async login(user: User): Promise<any> {
+    const dbUser: User = await this.findOneByEmail(user.email);
+    if (!dbUser) {
+      throw new HttpException(
+        {
+          message: '用户不存在',
+        },
+        400,
+      );
+    }
+    if (dbUser.password !== user.password) {
+      throw new HttpException(
+        {
+          message: '密码错误',
+        },
+        400,
+      );
+    }
+    // TODO: 此处应该产生token, 返回token
+    return {
+      token: 'my-token',
+    };
   }
 
   async create(user: User): Promise<void> {
     await this.usersRepository.save(user);
   }
 
-  findOneByEmail(email: string): Promise<User> {
-    return this.usersRepository.findOneBy({
+  async findOneByEmail(email: string): Promise<User> {
+    return await this.usersRepository.findOneBy({
       email,
     });
-  }
-
-  async findOne(id: number): Promise<User> {
-    return await this.usersRepository.findOneBy({
-      id,
-    });
-  }
-
-  findAll(): Promise<User[]> {
-    return this.usersRepository.find();
-  }
-
-  async remove(id: number): Promise<void> {
-    await this.usersRepository.delete(id);
   }
 }

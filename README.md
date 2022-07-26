@@ -4,5 +4,4 @@
 
 ### 开发
 
-1. `npm run start:debug`
-2. 
+1. `npm run start:dev`

@@ -1,34 +1,27 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './entity/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
+import { md5 } from 'src/tool/md5';
 
 @Controller('api/user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-
-  @Get('hello')
-  async hello(): Promise<string> {
-    return await this.userService.getHello();
-  }
-
-  @Post()
-  async create(@Body() createUserDto: CreateUserDto) {
+  @Post('register')
+  async register(@Body() createUserDto: CreateUserDto) {
     const { email, password } = createUserDto;
     const user: User = new User();
     user.email = email;
-    user.password = password;
+    user.password = md5(password);
     return await this.userService.register(user);
   }
 
-  @Get('all')
-  async findAll(): Promise<User[]> {
-    const aa: User[] = await this.userService.findAll();
-    return aa;
-  }
-
-  @Get(':id')
-  async findOne(@Param('id') id: number): Promise<User> {
-    return await this.userService.findOne(id);
+  @Post('login')
+  async login(@Body() createUserDto: CreateUserDto) {
+    const { email, password } = createUserDto;
+    const user: User = new User();
+    user.email = email;
+    user.password = md5(password);
+    return await this.userService.login(user);
   }
 }

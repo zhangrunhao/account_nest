@@ -17,14 +17,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
-    const message = exception.message.message
-      ? exception.message.message
+    const message = exception.response.message
+      ? exception.response.message
       : `${status >= 500 ? 'service error' : 'client error'}`;
     const errorResponse = {
       statusCode: status,
-      data: {
-        error: message,
-      },
+      message,
       code: 1, // 自定义code
       url: request.originalUrl,
     };
