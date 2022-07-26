@@ -10,21 +10,37 @@ export class UserService {
     private usersRepository: Repository<User>,
   ) {}
 
-  findAll(): Promise<User[]> {
-    return this.usersRepository.find();
+  getHello(): Promise<string> {
+    return Promise.resolve('Hello world');
   }
 
-  findOne(id: number): Promise<User> {
+  async register(user: User): Promise<void> {
+    const dbUser: User = await this.findOneByEmail(user.email);
+    if (dbUser) throw new Error('邮箱已注册');
+    return this.create(user);
+  }
+
+  async create(user: User): Promise<void> {
+    await this.usersRepository.save(user);
+  }
+
+  findOneByEmail(email: string): Promise<User> {
     return this.usersRepository.findOneBy({
+      email,
+    });
+  }
+
+  async findOne(id: number): Promise<User> {
+    return await this.usersRepository.findOneBy({
       id,
     });
   }
 
-  async remove(id: number): Promise<void> {
-    await this.usersRepository.delete(id);
+  findAll(): Promise<User[]> {
+    return this.usersRepository.find();
   }
 
-  getHello(): string {
-    return 'Hello World!';
+  async remove(id: number): Promise<void> {
+    await this.usersRepository.delete(id);
   }
 }

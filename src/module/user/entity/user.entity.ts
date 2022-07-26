@@ -9,14 +9,8 @@ export class User {
   email: string;
 
   @Column()
+  uname: string;
+
+  @Column()
   password: string;
-
-  @Column({ type: Date })
-  create_at: string;
-
-  @Column({ type: Date, nullable: true })
-  update_at: string;
-
-  @Column({ type: Date, nullable: true })
-  delete_at: string;
 }
