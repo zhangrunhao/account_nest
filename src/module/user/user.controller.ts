@@ -7,6 +7,7 @@ import { md5 } from 'src/tool/md5';
 @Controller('api/user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
   @Post('register')
   async register(@Body() createUserDto: CreateUserDto) {
     const { email, password } = createUserDto;
