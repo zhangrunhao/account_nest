@@ -1,8 +1,8 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { UserService } from './user.service';
-import { User } from './entity/user.entity';
+import { User } from './entity/user';
 import { CreateUserDto } from './dto/create-user.dto';
-import { md5 } from 'src/tool/md5';
+import { encryptPassword, makeSalt } from 'src/utils/cryptogram';
 
 @Controller('api/user')
 export class UserController {
@@ -13,7 +13,8 @@ export class UserController {
     const { email, password } = createUserDto;
     const user: User = new User();
     user.email = email;
-    user.password = md5(password);
+    user.salt = makeSalt();
+    user.password = encryptPassword(password, user.salt);
     return await this.userService.register(user);
   }
 
@@ -22,7 +23,7 @@ export class UserController {
     const { email, password } = createUserDto;
     const user: User = new User();
     user.email = email;
-    user.password = md5(password);
+    user.password = password;
     return await this.userService.login(user);
   }
 }
