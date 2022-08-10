@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { AbstractEntity } from '../../../entity/abstract.entity';
+import { AbstractEntity } from 'src/entity/abstract.entity';
 
 @Entity()
 export class User extends AbstractEntity {

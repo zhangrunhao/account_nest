@@ -16,7 +16,7 @@ export function makeSalt(): string {
  * @param salt 盐
  */
 export function encryptPassword(password: string, salt: string): string {
-  if (!password || !salt) return '';
+  if (!password || !salt) throw new Error("password or salt don't exist");
   const tempSalt = Buffer.from(salt, 'base64');
   // 1000:迭代次数; 16:长度
   return crypto
