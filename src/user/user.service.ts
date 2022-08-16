@@ -10,10 +10,6 @@ export class UserService {
     private usersRepository: Repository<User>,
   ) {}
 
-  getHello(): Promise<string> {
-    return Promise.resolve('Hello world');
-  }
-
   async register(user: User): Promise<void> {
     const dbUser: User = await this.findOneByEmail(user.email);
     if (dbUser) {
