@@ -27,30 +27,6 @@ export class UserService {
     return this.create(user);
   }
 
-  async login(user: User): Promise<any> {
-    const dbUser: User = await this.findOneByEmail(user.email);
-    if (!dbUser) {
-      throw new HttpException(
-        {
-          message: '用户不存在',
-        },
-        400,
-      );
-    }
-    if (dbUser.password !== user.password) {
-      throw new HttpException(
-        {
-          message: '密码错误',
-        },
-        400,
-      );
-    }
-    // TODO: 此处应该产生token, 返回token
-    return {
-      token: 'my-token',
-    };
-  }
-
   async create(user: User): Promise<void> {
     await this.usersRepository.save(user);
   }
