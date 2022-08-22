@@ -10,13 +10,11 @@ import { LocalStrategy } from './local.strategy';
 @Module({
   imports: [
     forwardRef(() => UserModule),
-    PassportModule.register({
-      defaultStrategy: 'jwt',
-    }),
+    PassportModule,
     JwtModule.register({
       secret: jwtConstants.secret,
       signOptions: {
-        expiresIn: '60s',
+        expiresIn: '6d',
       },
     }),
   ],

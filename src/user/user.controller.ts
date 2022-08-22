@@ -8,11 +8,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { User } from './entity/user';
+import { UserEntity } from './entity/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { encryptPassword, makeSalt } from 'src/utils/cryptogram';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { AuthService } from 'src/auth/auth.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('api/user')
 export class UserController {
@@ -23,16 +24,16 @@ export class UserController {
     private readonly authService: AuthService,
   ) {}
 
-  @UseGuards()
+  @UseGuards(JwtAuthGuard)
   @Get('hello')
   async hello(): Promise<any> {
     return 'hello world';
   }
 
   @Post('register')
-  async register(@Body() createUserDto: CreateUserDto) {
+  async register(@Body() createUserDto: CreateUserDto): Promise<any> {
     const { email, password } = createUserDto;
-    const user: User = new User();
+    const user: UserEntity = new UserEntity();
     user.email = email;
     user.salt = makeSalt();
     user.password = encryptPassword(password, user.salt);
@@ -41,8 +42,8 @@ export class UserController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req) {
-    const user: User = req.user;
+  async login(@Request() req): Promise<any> {
+    const user: UserEntity = req.user;
     return this.authService.login(user);
   }
 }

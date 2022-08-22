@@ -1,17 +1,17 @@
 import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from './entity/user';
+import { UserEntity } from './entity/user.entity';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    @InjectRepository(UserEntity)
+    private usersRepository: Repository<UserEntity>,
   ) {}
 
-  async register(user: User): Promise<void> {
-    const dbUser: User = await this.findOneByEmail(user.email);
+  async register(user: UserEntity): Promise<void> {
+    const dbUser: UserEntity = await this.findOneByEmail(user.email);
     if (dbUser) {
       throw new HttpException(
         {
@@ -23,11 +23,11 @@ export class UserService {
     return this.create(user);
   }
 
-  async create(user: User): Promise<void> {
+  async create(user: UserEntity): Promise<void> {
     await this.usersRepository.save(user);
   }
 
-  async findOneByEmail(email: string): Promise<User> {
+  async findOneByEmail(email: string): Promise<UserEntity> {
     return await this.usersRepository.findOneBy({
       email,
     });

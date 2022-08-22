@@ -1,13 +1,15 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User as UserEntity } from './user/entity/user';
+import { UserEntity } from './user/entity/user.entity';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { TradeCateEntity } from './trade-cate/entity/trade-cate.entity';
+import { TradeCateModule } from './trade-cate/trade-cate.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      entities: [UserEntity],
+      entities: [UserEntity, TradeCateEntity],
       type: 'mysql',
       host: '127.0.0.1',
       port: 3306,
@@ -18,6 +20,7 @@ import { AuthModule } from './auth/auth.module';
     }),
     UserModule,
     AuthModule,
+    TradeCateModule,
   ],
 })
 export class AppModule {}
