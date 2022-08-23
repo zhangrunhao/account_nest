@@ -20,3 +20,35 @@ export enum TradeOperation {
   // 平款 add
   Flat = 10,
 }
+
+export const getTradeOperationDescByCode = function (code: number): string {
+  return TradeOperation[code];
+};
+
+export const getTradeOperationCodeByDesc = function (desc: string): number {
+  desc =
+    desc.substring(0, 1).toLocaleUpperCase() +
+    desc.substring(1).toLocaleLowerCase();
+  switch (desc) {
+    case 'Income':
+      return TradeOperation.Income;
+    case 'Expend':
+      return TradeOperation.Expend;
+    case 'TransferIn':
+      return TradeOperation.TransferIn;
+    case 'TransferOut':
+      return TradeOperation.TransferOut;
+    case 'Borrow':
+      return TradeOperation.Borrow;
+    case 'Lend':
+      return TradeOperation.Lend;
+    case 'Receive':
+      return TradeOperation.Receive;
+    case 'Repayment':
+      return TradeOperation.Repayment;
+    case 'Init':
+      return TradeOperation.Init;
+    case 'Flat':
+      return TradeOperation.Flat;
+  }
+};

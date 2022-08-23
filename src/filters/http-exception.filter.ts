@@ -24,6 +24,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       statusCode: status,
       message,
       code: 1, // 自定义code
+      method: request.method,
       url: request.originalUrl,
     };
     response.status(status);

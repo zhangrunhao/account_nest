@@ -32,4 +32,10 @@ export class UserService {
       email,
     });
   }
+
+  async findOneById(id: number): Promise<UserEntity> {
+    return await this.usersRepository.findOneBy({
+      id,
+    });
+  }
 }

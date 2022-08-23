@@ -27,6 +27,10 @@ export class AuthService {
     return null;
   }
 
+  async validateUserExist(id: number): Promise<UserEntity> {
+    return await this.userService.findOneById(id);
+  }
+
   /**
    * 登录加密
    * @param user 用户信息
