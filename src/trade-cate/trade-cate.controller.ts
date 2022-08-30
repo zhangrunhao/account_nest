@@ -21,7 +21,6 @@ import {
 } from 'src/enum/trade-operation.enum';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { CreateTradeCateDto } from './dto/create-trade-cate.dto';
-import { UpdateTradeCateDto } from './dto/update-trade-cate.dto';
 import { TradeCateEntity } from './entity/trade-cate.entity';
 import { TradeCateService } from './trade-cate.service';
 
@@ -50,7 +49,7 @@ export class TradeCateController {
   @Put(':id')
   async updateTradeCate(
     @Param() params: any,
-    @Body() updateTradeCateDto: UpdateTradeCateDto,
+    @Body() updateTradeCateDto: CreateTradeCateDto,
   ): Promise<any> {
     const tradeCate: TradeCateEntity = new TradeCateEntity();
     const { name, icon, operate } = updateTradeCateDto;

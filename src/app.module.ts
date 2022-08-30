@@ -6,11 +6,18 @@ import { AuthModule } from './auth/auth.module';
 import { TradeCateEntity } from './trade-cate/entity/trade-cate.entity';
 import { TradeCateModule } from './trade-cate/trade-cate.module';
 import { UserToTradeCateEntity } from './trade-cate/entity/user-to-trade-cate.entity';
+import { AccountModule } from './account/account.module';
+import { AccountEntity } from './account/entity/account.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      entities: [UserEntity, TradeCateEntity, UserToTradeCateEntity],
+      entities: [
+        UserEntity,
+        TradeCateEntity,
+        UserToTradeCateEntity,
+        AccountEntity,
+      ],
       type: 'mysql',
       host: '127.0.0.1',
       port: 3306,
@@ -22,6 +29,7 @@ import { UserToTradeCateEntity } from './trade-cate/entity/user-to-trade-cate.en
     UserModule,
     AuthModule,
     TradeCateModule,
+    AccountModule,
   ],
 })
 export class AppModule {}

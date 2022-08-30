@@ -1,7 +1,5 @@
 import * as crypto from 'crypto';
 
-// TODO: 尝试理解crypto逻辑
-
 /**
  * Make Salt
  * @returns salt

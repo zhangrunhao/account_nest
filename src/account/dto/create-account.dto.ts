@@ -1,6 +1,6 @@
 import { IsIn, IsNotEmpty, IsString } from 'class-validator';
 
-export class UpdateTradeCateDto {
+export class CreateAccountDto {
   @IsNotEmpty()
   @IsString()
   name: string;
@@ -10,7 +10,7 @@ export class UpdateTradeCateDto {
   icon: string;
 
   @IsNotEmpty()
-  @IsIn(['income', 'expand'])
+  @IsIn(['Property', 'Debt'])
   @IsString()
-  operate: 'income' | 'expand';
+  cate: 'Property' | 'Debt';
 }
