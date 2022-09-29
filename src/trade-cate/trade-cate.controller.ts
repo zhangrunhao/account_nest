@@ -43,7 +43,7 @@ export class TradeCateController {
     tradeCate.icon = icon;
     tradeCate.type = TradeCateType.Extra;
     tradeCate.operate = getTradeOperationCodeByDesc(operate);
-    return this.tradeCateService.create(user, tradeCate);
+    await this.tradeCateService.create(user, tradeCate);
   }
 
   @Put(':id')
@@ -57,7 +57,7 @@ export class TradeCateController {
     tradeCate.name = name;
     tradeCate.icon = icon;
     tradeCate.operate = getTradeOperationCodeByDesc(operate);
-    return this.tradeCateService.update(tradeCate);
+    await this.tradeCateService.update(tradeCate);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -66,7 +66,7 @@ export class TradeCateController {
     @Request() request: any,
     @Param() params: any,
   ): Promise<any> {
-    return this.tradeCateService.delete(request.user.id, params.id);
+    await this.tradeCateService.delete(request.user.id, params.id);
   }
 
   @UseGuards(JwtAuthGuard)

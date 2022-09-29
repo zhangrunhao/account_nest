@@ -8,6 +8,8 @@ import { TradeCateModule } from './trade-cate/trade-cate.module';
 import { UserToTradeCateEntity } from './trade-cate/entity/user-to-trade-cate.entity';
 import { AccountModule } from './account/account.module';
 import { AccountEntity } from './account/entity/account.entity';
+import { TradeEntity } from './trade/entity/trade.entity';
+import { TradeModule } from './trade/trade.module';
 
 @Module({
   imports: [
@@ -17,6 +19,7 @@ import { AccountEntity } from './account/entity/account.entity';
         TradeCateEntity,
         UserToTradeCateEntity,
         AccountEntity,
+        TradeEntity,
       ],
       type: 'mysql',
       host: '127.0.0.1',
@@ -30,6 +33,7 @@ import { AccountEntity } from './account/entity/account.entity';
     AuthModule,
     TradeCateModule,
     AccountModule,
+    TradeModule,
   ],
 })
 export class AppModule {}

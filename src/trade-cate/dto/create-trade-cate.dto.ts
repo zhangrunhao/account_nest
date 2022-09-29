@@ -10,7 +10,7 @@ export class CreateTradeCateDto {
   icon: string;
 
   @IsNotEmpty()
-  @IsIn(['Income', 'Expand'])
+  @IsIn(['Income', 'Expend'])
   @IsString()
-  operate: 'Income' | 'Expand';
+  operate: 'Income' | 'Expend';
 }
