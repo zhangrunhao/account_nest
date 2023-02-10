@@ -20,6 +20,11 @@ export class UserService {
         400,
       );
     }
+    /**
+     *  TODO: 用户创建成功后, 应该在一个事务中, 初始化cate的默认初始类型
+     * 1. 读取所有默认的cate
+     * 2. 所有默认的cate与用户建立联系
+     */
     return this.create(user);
   }
 

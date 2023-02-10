@@ -18,9 +18,9 @@ export class TradeCateEntity extends AbstractEntity {
 
   /**
    * 类型
-   * Default = 1, // 默认
-   * Extra = 2, // 扩展
-   * System = 3, // 系统
+   * Default = 1, // 默认, 餐饮/交通/工资等
+   * Extra = 2, // 扩展, 可乐/游戏机等
+   * System = 3, // 系统, 转入/借出/平帐等
    */
   @Column({
     name: 'type',

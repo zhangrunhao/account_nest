@@ -1,9 +1,10 @@
 import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/entity/user.entity';
-import { Connection, Repository } from 'typeorm';
+import { Connection, Repository, EntityManager } from 'typeorm';
 import { TradeCateEntity } from './entity/trade-cate.entity';
 import { UserToTradeCateEntity } from './entity/user-to-trade-cate.entity';
+import { TradeCateType } from '../enum/trade-cate-type.enum';
 
 @Injectable()
 export class TradeCateService {
@@ -19,25 +20,13 @@ export class TradeCateService {
     private connection: Connection,
   ) {}
 
+  async adminCreate(tradeCate: TradeCateEntity) {
+    await this.tradeCateRepository.save(tradeCate);
+  }
+
   async create(user: UserEntity, tradeCate: TradeCateEntity): Promise<void> {
     const userToTradeCate: UserToTradeCateEntity = new UserToTradeCateEntity();
     userToTradeCate.user_id = user.id;
-
-    // 1. 事务的第一种方式
-    // const queryRunner: QueryRunner = this.connection.createQueryRunner();
-    // queryRunner.connect();
-    // queryRunner.startTransaction();
-    // try {
-    //   const tradeCateNew: TradeCateEntity = await queryRunner.manager.save(
-    //     tradeCate,
-    //   );
-    //   userToTradeCate.trade_cate_id = tradeCateNew.id;
-    //   queryRunner.manager.save(userToTradeCate);
-    //   await queryRunner.commitTransaction();
-    // } catch (error) {
-    //   await queryRunner.rollbackTransaction();
-    // }
-
     // 2. 事务的第二种方式
     await this.connection.transaction(async (manager) => {
       const tradeCateNew: TradeCateEntity = await manager.save(tradeCate);
@@ -52,6 +41,7 @@ export class TradeCateService {
         id,
       },
     );
+    // TODO: 判断用户和这个id之间, 是否有关系
     if (!tradeCate) {
       throw new HttpException(
         {
@@ -62,44 +52,82 @@ export class TradeCateService {
     }
   }
 
-  async update(tradeCate: TradeCateEntity): Promise<void> {
+  async update(tradeCate: TradeCateEntity, user: UserEntity): Promise<void> {
     await this.judgeIsDeleted(tradeCate.id);
-    await this.tradeCateRepository.update(
+    const tradeCateDB: TradeCateEntity = await this.getById(tradeCate.id);
+    if (tradeCateDB.type === TradeCateType.Default) {
+      await this.connection.transaction(async (manager: EntityManager) => {
+        // 1. 删除用户和这个默认分类的关系
+        await manager.update(
+          UserToTradeCateEntity,
+          {
+            user_id: user.id,
+            trade_cate_id: tradeCate.id,
+          },
+          {
+            delete_at: new Date(),
+          },
+        );
+        // 2. 再添加一个扩展类型
+        const tradeCateNew: TradeCateEntity = new TradeCateEntity();
+        tradeCateNew.icon = tradeCate.icon;
+        tradeCateNew.name = tradeCate.name;
+        tradeCateNew.operate = tradeCate.operate;
+        tradeCateNew.type = TradeCateType.Extra;
+        const tradeCateResult: TradeCateEntity =
+          await manager.save<TradeCateEntity>(tradeCateNew);
+        // 3. 再加上这个用户之间的关系
+        const userToTradeCateNew: UserToTradeCateEntity =
+          new UserToTradeCateEntity();
+        userToTradeCateNew.user_id = user.id;
+        userToTradeCateNew.trade_cate_id = tradeCateResult.id;
+        await manager.save(userToTradeCateNew);
+      });
+    } else if (tradeCateDB.type === TradeCateType.Extra) {
+      // 或者的直接更新
+      await this.tradeCateRepository.update(
+        {
+          id: tradeCate.id,
+        },
+        tradeCate,
+      );
+      await this.getById(tradeCate.id);
+    } else if (tradeCateDB.type === TradeCateType.System) {
+      // 系统的, 不应该走到这里, 直接报错即可
+    }
+  }
+
+  async delete(userId, tradeCateId): Promise<void> {
+    await this.userToTradeCateRepository.update(
       {
-        id: tradeCate.id,
+        user_id: userId,
+        trade_cate_id: tradeCateId,
       },
-      tradeCate,
+      {
+        delete_at: new Date(),
+      },
     );
   }
 
-  async delete(userId: number, tradeCateId: number): Promise<void> {
+  async getById(tradeCateId: number): Promise<TradeCateEntity> {
     await this.judgeIsDeleted(tradeCateId);
-    await this.connection.transaction(async () => {
-      await this.tradeCateRepository.update(
-        {
-          id: tradeCateId,
-        },
-        {
-          delete_at: new Date(),
-        },
-      );
-      await this.userToTradeCateRepository.update(
-        {
-          user_id: userId,
-          trade_cate_id: tradeCateId,
-        },
-        {
-          delete_at: new Date(),
-        },
-      );
+    return await this.tradeCateRepository.findOne({
+      where: {
+        id: tradeCateId,
+      },
     });
   }
 
-  async getById(tradeId: number): Promise<TradeCateEntity> {
-    await this.judgeIsDeleted(tradeId);
-    return await this.tradeCateRepository.findOne({
+  async getUserToTradeCate(
+    tradeCateId: number,
+    userId: number,
+  ): Promise<UserToTradeCateEntity> {
+    // 首先判断这个cate是否存在
+    await this.judgeIsDeleted(tradeCateId);
+    return await this.userToTradeCateRepository.findOne({
       where: {
-        id: tradeId,
+        user_id: userId,
+        trade_cate_id: tradeCateId,
       },
     });
   }

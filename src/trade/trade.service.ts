@@ -61,7 +61,6 @@ export class TradeService {
     operate?: number,
     spendDate?: Date,
   ): Promise<TradeEntity[]> {
-    this.logger.debug(spendDate);
     return await this.tradeRepository.find({
       where: {
         userId,

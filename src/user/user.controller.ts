@@ -13,7 +13,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { encryptPassword, makeSalt } from 'src/utils/cryptogram';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { AuthService } from 'src/auth/auth.service';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('api/user')
 export class UserController {
@@ -24,7 +23,6 @@ export class UserController {
     private readonly authService: AuthService,
   ) {}
 
-  @UseGuards(JwtAuthGuard)
   @Get('hello')
   async hello(): Promise<any> {
     return 'hello world';

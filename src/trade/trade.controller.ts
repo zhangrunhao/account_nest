@@ -63,7 +63,6 @@ export class TradeController {
   @UseGuards(JwtAuthGuard)
   @Get()
   async getTradeList(@Request() request, @Query() query): Promise<any> {
-    this.logger.debug(query);
     const tradeList: TradeEntity[] = await this.tradeService.list(
       request.user.id,
       query.tradeCateId ? query.tradeCateId : null,

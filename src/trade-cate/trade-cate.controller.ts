@@ -46,18 +46,21 @@ export class TradeCateController {
     await this.tradeCateService.create(user, tradeCate);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
   async updateTradeCate(
+    @Request() request,
     @Param() params: any,
     @Body() updateTradeCateDto: CreateTradeCateDto,
   ): Promise<any> {
+    const user: UserEntity = request.user;
     const tradeCate: TradeCateEntity = new TradeCateEntity();
     const { name, icon, operate } = updateTradeCateDto;
     tradeCate.id = params.id;
     tradeCate.name = name;
     tradeCate.icon = icon;
     tradeCate.operate = getTradeOperationCodeByDesc(operate);
-    await this.tradeCateService.update(tradeCate);
+    await this.tradeCateService.update(tradeCate, user);
   }
 
   @UseGuards(JwtAuthGuard)
