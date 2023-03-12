@@ -18,6 +18,7 @@ import {
 } from 'src/enum/trade-operation.enum';
 import { CreateTradeDto } from './dto/create-trade.dto';
 import { TradeEntity } from './entity/trade.entity';
+import { ViewTradeEntity } from './entity/view-trade.entity';
 import { TradeService } from './trade.service';
 
 @Controller('/api/trade')
@@ -63,26 +64,19 @@ export class TradeController {
   @UseGuards(JwtAuthGuard)
   @Get()
   async getTradeList(@Request() request, @Query() query): Promise<any> {
-    const tradeList: TradeEntity[] = await this.tradeService.list(
+    const tradeList: ViewTradeEntity[] = await this.tradeService.list(
       request.user.id,
-      query.tradeCateId ? query.tradeCateId : null,
-      query.accountId ? query.accountId : null,
-      query.operate ? getTradeOperationCodeByDesc(query.operate) : null,
-      query.spendDate ? query.spendDate : null,
+      // query.tradeCateId ? query.tradeCateId : null,
+      // query.accountId ? query.accountId : null,
+      // query.operate ? getTradeOperationCodeByDesc(query.operate) : null,
+      // query.spendDate ? query.spendDate : null,
     );
-    return tradeList.map(
-      ({ id, accountId, money, remark, spendDate, tradeCateId, operate }) => {
-        return {
-          id,
-          accountId,
-          money,
-          remark,
-          spendDate,
-          tradeCateId,
-          operate: getTradeOperationDescByCode(operate),
-        };
-      },
-    );
+    return tradeList.map((t: ViewTradeEntity) => {
+      return {
+        ...t,
+        operate: getTradeOperationDescByCode(t.operate),
+      };
+    });
   }
 
   @UseGuards(JwtAuthGuard)

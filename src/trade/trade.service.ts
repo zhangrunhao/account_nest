@@ -2,6 +2,7 @@ import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TradeEntity } from './entity/trade.entity';
+import { ViewTradeEntity } from './entity/view-trade.entity';
 
 @Injectable()
 export class TradeService {
@@ -10,7 +11,18 @@ export class TradeService {
   constructor(
     @InjectRepository(TradeEntity)
     private tradeRepository: Repository<TradeEntity>,
+
+    @InjectRepository(ViewTradeEntity)
+    private viewTradeRepository: Repository<ViewTradeEntity>,
   ) {}
+
+  async list(userId: number): Promise<ViewTradeEntity[]> {
+    return await this.viewTradeRepository.find({
+      where: {
+        user_id: userId,
+      },
+    });
+  }
 
   async create(trade: TradeEntity): Promise<void> {
     // TODO: 检查cate, account等是否正确
@@ -52,24 +64,6 @@ export class TradeService {
         400,
       );
     }
-  }
-
-  async list(
-    userId: number,
-    tradeCateId?: number,
-    accountId?: number,
-    operate?: number,
-    spendDate?: Date,
-  ): Promise<TradeEntity[]> {
-    return await this.tradeRepository.find({
-      where: {
-        userId,
-        accountId,
-        operate,
-        spendDate,
-        tradeCateId,
-      },
-    });
   }
 
   async detail(tradeId: number): Promise<TradeEntity> {

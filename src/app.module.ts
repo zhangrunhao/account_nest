@@ -9,6 +9,7 @@ import { UserToTradeCateEntity } from './trade-cate/entity/user-to-trade-cate.en
 import { AccountModule } from './account/account.module';
 import { AccountEntity } from './account/entity/account.entity';
 import { TradeEntity } from './trade/entity/trade.entity';
+import { ViewTradeEntity } from './trade/entity/view-trade.entity';
 import { TradeModule } from './trade/trade.module';
 
 @Module({
@@ -20,6 +21,7 @@ import { TradeModule } from './trade/trade.module';
         UserToTradeCateEntity,
         AccountEntity,
         TradeEntity,
+        ViewTradeEntity,
       ],
       type: 'mysql',
       host: '127.0.0.1',

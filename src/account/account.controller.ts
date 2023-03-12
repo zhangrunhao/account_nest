@@ -8,6 +8,7 @@ import {
   Put,
   Request,
   UseGuards,
+  Logger,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import {
@@ -20,6 +21,7 @@ import { AccountEntity } from './entity/account.entity';
 
 @Controller('api/account')
 export class AccountController {
+  private readonly logger = new Logger(AccountController.name);
   constructor(private readonly accountService: AccountService) {}
 
   @UseGuards(JwtAuthGuard)
@@ -51,6 +53,7 @@ export class AccountController {
     account.icon = icon;
     account.cate = getAccountCateCodeByDesc(cate);
     account.userId = request.user.id;
+    this.logger.debug(JSON.stringify(account));
     return this.accountService.update(account);
   }
 

@@ -27,10 +27,6 @@ export class TradeEntity extends AbstractEntity {
   @Column()
   money: number; // 金额
 
-  // TODO: 系统添加币种逻辑
-  // @Column()
-  // currency: string; // 币种
-
   @Column({
     nullable: true,
   })
