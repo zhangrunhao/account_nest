@@ -25,7 +25,6 @@ export class TradeService {
   }
 
   async create(trade: TradeEntity): Promise<void> {
-    // TODO: 检查cate, account等是否正确
     await this.tradeRepository.save(trade);
   }
 
@@ -41,7 +40,6 @@ export class TradeService {
 
   async delete(tradeId: number): Promise<void> {
     await this.checkIsDeleted(tradeId);
-    // TODO: 删除, 不应该更新update_at
     await this.tradeRepository.update(
       {
         id: tradeId,

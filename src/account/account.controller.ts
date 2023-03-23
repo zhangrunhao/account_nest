@@ -53,7 +53,6 @@ export class AccountController {
     account.icon = icon;
     account.cate = getAccountCateCodeByDesc(cate);
     account.userId = request.user.id;
-    this.logger.debug(JSON.stringify(account));
     return this.accountService.update(account);
   }
 

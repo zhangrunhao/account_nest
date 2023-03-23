@@ -7,7 +7,6 @@ import {
   Param,
   Post,
   Put,
-  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -43,33 +42,33 @@ export class TradeController {
   @UseGuards(JwtAuthGuard)
   @Put(':id')
   async updateTrade(
+    @Request() request,
     @Param() params: any,
     @Body() updateTradeDto: CreateTradeDto,
   ): Promise<any> {
-    // TODO: 判断次trade是否为此用户的trade
-    const trade: TradeEntity = Object.assign({}, updateTradeDto, {
-      id: params.id,
-      operate: getTradeOperationCodeByDesc(updateTradeDto.operate),
-    });
+    const trade: TradeEntity = new TradeEntity();
+    trade.userId = request.user.id;
+    trade.id = params.id;
+    trade.spendDate = new Date(updateTradeDto.spendDate);
+    trade.operate = getTradeOperationCodeByDesc(updateTradeDto.operate);
+    trade.accountId = updateTradeDto.accountId;
+    trade.money = updateTradeDto.money;
+    trade.remark = updateTradeDto.remark;
+    trade.tradeCateId = updateTradeDto.tradeCateId;
     await this.tradeService.update(trade);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async deleteTrade(@Param() params: any): Promise<any> {
-    // TODO: 判断次trade是否为此用户的trade
     await this.tradeService.delete(params.id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async getTradeList(@Request() request, @Query() query): Promise<any> {
+  async getTradeList(@Request() request): Promise<any> {
     const tradeList: ViewTradeEntity[] = await this.tradeService.list(
       request.user.id,
-      // query.tradeCateId ? query.tradeCateId : null,
-      // query.accountId ? query.accountId : null,
-      // query.operate ? getTradeOperationCodeByDesc(query.operate) : null,
-      // query.spendDate ? query.spendDate : null,
     );
     return tradeList.map((t: ViewTradeEntity) => {
       return {
