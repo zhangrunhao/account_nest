@@ -16,10 +16,23 @@ export class TradeService {
     private viewTradeRepository: Repository<ViewTradeEntity>,
   ) {}
 
-  async list(userId: number): Promise<ViewTradeEntity[]> {
+  async list(userId: number, query: any): Promise<ViewTradeEntity[]> {
     return await this.viewTradeRepository.find({
       where: {
         user_id: userId,
+        ...query,
+      },
+    });
+  }
+
+  async listByAccountId(
+    userId: number,
+    accountId: number,
+  ): Promise<ViewTradeEntity[]> {
+    return await this.viewTradeRepository.find({
+      where: {
+        user_id: userId,
+        account_id: accountId,
       },
     });
   }
@@ -34,7 +47,14 @@ export class TradeService {
       {
         id: trade.id,
       },
-      trade,
+      {
+        accountId: trade.accountId,
+        tradeCateId: trade.tradeCateId,
+        remark: trade.remark,
+        spendDate: trade.spendDate,
+        operate: trade.operate,
+        money: trade.money,
+      },
     );
   }
 

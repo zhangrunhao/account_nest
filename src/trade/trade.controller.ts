@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -66,14 +67,24 @@ export class TradeController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async getTradeList(@Request() request): Promise<any> {
+  async getTradeList(
+    @Request() request: any,
+    @Query() query: any,
+  ): Promise<any> {
+    const operate = query.operate && getTradeOperationCodeByDesc(query.operate);
     const tradeList: ViewTradeEntity[] = await this.tradeService.list(
       request.user.id,
+      {
+        account_id: query.accountId,
+        trade_cate_id: query.tradeCateId,
+        operate,
+      },
     );
     return tradeList.map((t: ViewTradeEntity) => {
       return {
         ...t,
         operate: getTradeOperationDescByCode(t.operate),
+        spend_date: t.spend_date.getTime(),
       };
     });
   }
